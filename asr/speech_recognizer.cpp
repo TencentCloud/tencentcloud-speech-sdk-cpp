@@ -48,9 +48,9 @@ class SpeechListener {
             websocketpp::log::alevel::frame_payload);
         m_endpoint.clear_access_channels(
             websocketpp::log::alevel::frame_header);
-        //  如果不想显示websocket的连接信息可以去掉此注释
-        // m_endpoint.clear_access_channels(websocketpp::log::alevel::connect);
-        // m_endpoint.clear_access_channels(websocketpp::log::alevel::disconnect);
+        //  如果想显示websocket的连接信息可以注释下面两行
+        m_endpoint.clear_access_channels(websocketpp::log::alevel::connect);
+        m_endpoint.clear_access_channels(websocketpp::log::alevel::disconnect);
 
         m_endpoint.init_asio();
         m_endpoint.set_message_handler(
