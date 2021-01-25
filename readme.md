@@ -46,7 +46,7 @@ windows环境区分x64和x86的库安装。
 
 # 示例
 
-在腾讯云控制台[访问管理](https://console.cloud.tencent.com/cam/capi)页面获取 appid、SecretID 、 SecretKey 。
+在腾讯云控制台[账号信息](https://console.cloud.tencent.com/developer)页面查看账号APPID，[访问管理](https://console.cloud.tencent.com/cam/capi)页面获取 SecretID 和 SecretKey 。
 
 见 [examples](https://github.com/TencentCloud/tencentcloud-speech-sdk-cpp/tree/master/examples) 目录，该目录下包含各语音服务的示例代码。
 参见 asr_example.cpp ，该文件是语音识别的示例代码。编译运行即可。windows请将test.wav拷贝至运行目录再运行。
