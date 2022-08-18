@@ -123,7 +123,7 @@ SpeechRecognitionResponse *decode_response(std::string message) {
     if (doc.HasMember("voice_id") && doc["voice_id"].IsString()) {
         rsp->voice_id = doc["voice_id"].GetString();
     }
-    if (doc.HasMember("message_id") && doc["message_id"].IsInt()) {
+    if (doc.HasMember("message_id") && doc["message_id"].IsString()) {
         rsp->message_id = doc["message_id"].GetString();
     }
     if (doc.HasMember("final") && doc["final"].IsInt()) {
