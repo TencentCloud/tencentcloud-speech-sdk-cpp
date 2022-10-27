@@ -6,7 +6,9 @@
 #include <vector>
 #include "tcloud_public_request_builder.h"
 #define REALTIME_ASR_URL_FORMAT                                                \
-    "ws://asr.cloud.tencent.com/asr/v2/%s?%s&signature=%s"
+    "wss://asr.cloud.tencent.com/asr/v2/%s?%s&signature=%s"
+#define REALTIME_ASR_HOSTNAME  "asr.cloud.tencent.com"
+
 enum EventType {
     TaskFail = 0,
     RecognitionStart,

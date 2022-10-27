@@ -4,15 +4,24 @@
 #include <stddef.h>
 #include "rapidjson/document.h"
 #include "tcloud_util.h"
-#include "websocket_handler.h"
+#include <websocketpp/config/asio_client.hpp>
+#include <websocketpp/client.hpp>
+#include <websocketpp/common/thread.hpp>
+#include <websocketpp/common/memory.hpp>
+#include <cstdlib>
+#include <iostream>
+#include <map>
+#include <string>
+#include <sstream>
 
 
 #define URL_MAX_LENGTH 1024
-typedef websocketpp::client<websocketpp::config::asio_client> client;
+typedef websocketpp::client<websocketpp::config::asio_tls_client> client;
 using websocketpp::lib::bind;
 using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
-typedef websocketpp::config::asio_client::message_type::ptr message_ptr;
+typedef websocketpp::config::asio_tls_client::message_type::ptr message_ptr;
+typedef websocketpp::lib::shared_ptr<websocketpp::lib::asio::ssl::context> context_ptr;
 
 template <class P, class M> size_t my_offsetof(const M P::*member) {
     return (size_t) & (reinterpret_cast<P *>(0)->*member);
@@ -30,6 +39,7 @@ P *my_container_of_impl(M *ptr, const M P::*member) {
 void OnOpen(client *c, websocketpp::connection_hdl hdl);
 void OnMessage(client *c, websocketpp::connection_hdl hdl, message_ptr msg);
 void OnClose(client *c, websocketpp::connection_hdl hdl);
+context_ptr OnTlsInit(const char * hostname, websocketpp::connection_hdl);
 
 class SpeechListener {
  public:
@@ -57,6 +67,8 @@ class SpeechListener {
             bind(&OnMessage, &m_endpoint, ::_1, ::_2));
         m_endpoint.set_open_handler(bind(&OnOpen, &m_endpoint, _1));
         m_endpoint.set_close_handler(bind(&OnClose, &m_endpoint, _1));
+        std::string hostname = REALTIME_ASR_HOSTNAME;
+        m_endpoint.set_tls_init_handler(bind(&OnTlsInit, hostname.c_str(), ::_1));
         websocketpp::lib::error_code ec;
         m_con = m_endpoint.get_connection(m_url, ec);
         m_con->add_subprotocol("janus-protocol");
@@ -103,6 +115,11 @@ void OnOpen(client *c, websocketpp::connection_hdl hdl) {
     rsp.voice_id = recognizer->m_config.voice_id;
     recognizer->SetReady();
     recognizer->on_recognition_start(&rsp);
+}
+
+context_ptr OnTlsInit(const char * hostname, websocketpp::connection_hdl){
+    context_ptr ctx = websocketpp::lib::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
+    return ctx;
 }
 
 void OnClose(client *c, websocketpp::connection_hdl hdl) {}

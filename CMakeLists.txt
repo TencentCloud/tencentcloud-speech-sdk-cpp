@@ -29,12 +29,12 @@ final_target ()
 
 if(MSVC)
 if (CMAKE_CL_64)
-	target_link_libraries(${TARGET_NAME} libboost_date_time-vc142-mt-gd-x64-1_74 libboost_regex-vc142-mt-gd-x64-1_74 libboost_random-vc142-mt-gd-x64-1_74 pthreadVC2 libcrypto )
+	target_link_libraries(${TARGET_NAME} libboost_date_time-vc142-mt-gd-x64-1_74 libboost_regex-vc142-mt-gd-x64-1_74 libboost_random-vc142-mt-gd-x64-1_74 pthreadVC2 libcrypto libssl)
 else()
-	target_link_libraries(${TARGET_NAME} libboost_date_time-vc142-mt-gd-x32-1_74 libboost_regex-vc142-mt-gd-x32-1_74 libboost_random-vc142-mt-gd-x32-1_74 pthreadVSE2 libcrypto )
+	target_link_libraries(${TARGET_NAME} libboost_date_time-vc142-mt-gd-x32-1_74 libboost_regex-vc142-mt-gd-x32-1_74 libboost_random-vc142-mt-gd-x32-1_74 pthreadVSE2 libcrypto libssl)
 endif ()
 else ()
-    target_link_libraries(${TARGET_NAME} -lboost_chrono -lboost_system -lboost_random -lpthread -lcrypto )
+    target_link_libraries(${TARGET_NAME} -lboost_chrono -lboost_system -lboost_random -lpthread -lcrypto -lssl)
 endif()
 
 
