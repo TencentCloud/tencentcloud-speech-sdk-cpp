@@ -57,6 +57,7 @@ typedef struct {
     std::string convert_num_mode;
     std::string word_info;
     std::string hotword_id;
+    std::string customization_id;
     std::string secret_key;
     std::string voice_id;
     std::string nonce;
@@ -78,6 +79,8 @@ class SpeechRecognizer {
     void Terminate();
 
     void Stop();
+
+    void SetReady();
 
     void Write(void *payload, size_t len);
 
@@ -105,6 +108,8 @@ class SpeechRecognizer {
 
     void SetHotwordId(std::string hotword_id);
 
+    void SetCustomizationId(std::string customization_id);
+
     void SetFilterDirty(int filter_dirty);
 
     void SetFilterPunc(int filter_punc);
@@ -129,6 +134,8 @@ class SpeechRecognizer {
     ASRCallBackFunc on_sentence_end;
 
  private:
+    bool ready_;
+
     void BuildRequest();
 
     std::string GetRequestURL();

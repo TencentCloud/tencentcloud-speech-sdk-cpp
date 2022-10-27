@@ -101,6 +101,7 @@ void OnOpen(client *c, websocketpp::connection_hdl hdl) {
         reinterpret_cast<SpeechRecognizer *>(listener->m_parent_ptr);
     SpeechRecognitionResponse rsp;
     rsp.voice_id = recognizer->m_config.voice_id;
+    recognizer->SetReady();
     recognizer->on_recognition_start(&rsp);
 }
 
@@ -233,12 +234,16 @@ void OnMessage(client *c, websocketpp::connection_hdl hdl, message_ptr msg) {
 SpeechRecognizer::SpeechRecognizer(std::string appid, std::string secret_id,
                                    std::string secret_key) {
     InitSpeechRecognizerConfig(appid, secret_id, secret_key);
+    ready_ = false;
 }
 SpeechRecognizer::~SpeechRecognizer() {}
 
 void SpeechRecognizer::Start() {
     m_listener = new SpeechListener(this, GetWebsocketURL());
     m_listener->Start();
+    while(!ready_) {
+        usleep(50 * 1000);
+    }
 }
 
 void SpeechRecognizer::Stop() {
@@ -246,6 +251,10 @@ void SpeechRecognizer::Stop() {
     m_listener->SendText(end_str.c_str(), end_str.length());
     m_listener->Terminate();
     delete m_listener;
+}
+
+void SpeechRecognizer::SetReady() {
+    ready_ = true;
 }
 
 void SpeechRecognizer::Write(void *payload, size_t len) {
@@ -299,6 +308,10 @@ void SpeechRecognizer::SetHotwordId(std::string hotword_id) {
     m_config.hotword_id = hotword_id;
 }
 
+void SpeechRecognizer::SetCustomizationId(std::string customization_id) {
+    m_config.customization_id = customization_id;
+}
+
 void SpeechRecognizer::SetFilterDirty(int filter_dirty) {
     m_config.filter_dirty = std::to_string(filter_dirty);
 }
@@ -337,6 +350,7 @@ void SpeechRecognizer::InitSpeechRecognizerConfig(std::string appid,
     m_config.convert_num_mode = "0";
     m_config.word_info = "0";
     m_config.hotword_id = "";
+    m_config.customization_id = "";
     m_config.nonce = "";
     char str[32] = { 0 };
     memset(str, 0, 32);
@@ -361,6 +375,9 @@ void SpeechRecognizer::BuildRequest() {
     m_builder.SetKeyValue("needvad", m_config.need_vad);
     if (m_config.hotword_id.length() > 0) {
         m_builder.SetKeyValue("hotword_id", m_config.hotword_id);
+    }
+    if (m_config.customization_id.length() > 0) {
+        m_builder.SetKeyValue("customization_id", m_config.customization_id);
     }
     if (m_config.nonce.length() > 0) {
         m_builder.SetKeyValue("nonce", m_config.nonce);

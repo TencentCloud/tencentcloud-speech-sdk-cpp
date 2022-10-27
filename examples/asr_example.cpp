@@ -6,6 +6,9 @@
 #include <fstream>
 #include <iostream>
 #include <pthread.h>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 #ifdef _WIN32
 #include "unistd_win.h"
 #include <windows.h>
@@ -118,8 +121,14 @@ void *process(void *arg) {
     std::string appid = "";
     std::string secret_id = "";
     std::string secret_key = "";
+
+    //gen unique voice_id
+    boost::uuids::uuid a_uuid = boost::uuids::random_generator()(); 
+    std::string voice_id_str = boost::uuids::to_string(a_uuid);
+
     SpeechRecognizer *recognizer =
         new SpeechRecognizer(appid, secret_id, secret_key);
+    recognizer->SetVoiceId(voice_id_str);
     recognizer->SetOnRecognitionStart(OnRecognitionStart);
     recognizer->SetOnFail(OnFail);
     recognizer->SetOnRecognitionComplete(OnRecognitionComplete);
@@ -128,13 +137,13 @@ void *process(void *arg) {
     recognizer->SetOnSentenceEnd(OnSentenceEnd);
     recognizer->SetEngineModelType("16k_zh");
     recognizer->SetNeedVad(1);
-    recognizer->SetHotwordId("123456789");
+    recognizer->SetHotwordId("");
+    recognizer->SetCustomizationId("");
     recognizer->SetFilterDirty(1);
     recognizer->SetFilterModal(1);
     recognizer->SetFilterPunc(1);
     recognizer->SetConvertNumMode(1);
     recognizer->SetWordInfo(0);
-    // recognizer->SetVadSilenceTime(500);
     recognizer->Start();
 
     int frame_len = 640;
@@ -142,12 +151,16 @@ void *process(void *arg) {
                         std::ios::binary | std::ios::in);
     if (!audio.is_open()) {
         std::cout << "open audio file error " << param->audio_file << std::endl;
+        recognizer->Stop();
+        delete recognizer;
         return NULL;
     }
 
     char *frame = reinterpret_cast<char *>(malloc(frame_len));
     if (frame == NULL) {
         std::cout << "malloc frame error " << std::endl;
+        recognizer->Stop();
+        delete recognizer;
         return NULL;
     }
 
