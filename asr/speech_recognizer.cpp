@@ -258,8 +258,14 @@ SpeechRecognizer::~SpeechRecognizer() {}
 void SpeechRecognizer::Start() {
     m_listener = new SpeechListener(this, GetWebsocketURL());
     m_listener->Start();
+    int cnt = 0;
     while(!ready_) {
         usleep(50 * 1000);
+        cnt += 1;
+        //waiting 1 second
+        if (cnt >= 20) {
+            break;
+        }
     }
 }
 
