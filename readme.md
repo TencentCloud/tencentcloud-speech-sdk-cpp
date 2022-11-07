@@ -39,8 +39,8 @@ windows环境区分x64和x86的库安装。
 
 2. 安装openssl的动态库。
 
-   * 如果使用x86编译器[Win32OpenSSL_Light-1_1_1h.exe](http://slproweb.com/download/Win32OpenSSL_Light-1_1_1h.exe)下载后，点击安装一直到完成。最后修改本SDK的lib目录下的“libcrypto32.lib”名称为“libcrypto.lib”。
-   * 如果使用x64编译器[Win64OpenSSL_Light-1_1_1h.exe](http://slproweb.com/download/Win64OpenSSL_Light-1_1_1h.exe)下载后，点击安装一直到完成。最后修改本SDK的lib目录下的“libcrypto64.lib”名称为“libcrypto.lib”。
+   * 如果使用x86编译器[Win32OpenSSL-1_1_1s.exe](http://slproweb.com/download/Win32OpenSSL-1_1_1s.exe)下载后，点击安装一直到完成。最后修改本SDK的lib目录下的“libcrypto32.lib”名称为“libcrypto.lib”。
+   * 如果使用x64编译器[Win64OpenSSL-1_1_1s.exe](http://slproweb.com/download/Win64OpenSSL-1_1_1s.exe)下载后，点击安装一直到完成。最后修改本SDK的lib目录下的“libcrypto64.lib”名称为“libcrypto.lib”。
 
    
 

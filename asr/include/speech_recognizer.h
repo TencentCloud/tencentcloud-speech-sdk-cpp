@@ -76,13 +76,15 @@ class SpeechRecognizer {
     void InitSpeechRecognizerConfig(std::string appid, std::string secret_id,
                                     std::string secret_key);
 
-    void Start();
+    int Start();
 
     void Terminate();
 
     void Stop();
 
     void SetReady();
+
+    void SetFailed();
 
     void Write(void *payload, size_t len);
 
@@ -137,6 +139,7 @@ class SpeechRecognizer {
 
  private:
     bool ready_;
+    bool failed_;
 
     void BuildRequest();
 

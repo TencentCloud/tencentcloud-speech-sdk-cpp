@@ -118,6 +118,7 @@ void OnRecognitionComplete(SpeechRecognitionResponse *rsp) {
 
 void *process(void *arg) {
     process_param_t *param = reinterpret_cast<process_param_t *>(arg);
+    //输入从官网申请的账号appid/secret_id/secret_key
     std::string appid = "";
     std::string secret_id = "";
     std::string secret_key = "";
@@ -144,7 +145,12 @@ void *process(void *arg) {
     recognizer->SetFilterPunc(1);
     recognizer->SetConvertNumMode(1);
     recognizer->SetWordInfo(0);
-    recognizer->Start();
+    int ret = recognizer->Start();
+    if (ret < 0) {
+        std::cout << " recognizer start failed \n" << std::endl;
+        delete recognizer;
+        return NULL;
+    }
 
     int frame_len = 640;
     std::ifstream audio(param->audio_file.c_str(),

@@ -14,6 +14,17 @@
 #include <string>
 #include <sstream>
 
+#ifdef _WIN32
+#include "unistd_win.h"
+#include <windows.h>
+#define sleep(sec) Sleep(sec * 1000)
+#define msleep(msec) Sleep(msec)
+#else
+#include <pthread.h>
+#include <unistd.h>
+#define msleep(msec) usleep(msec * 1000)
+#endif
+
 
 #define URL_MAX_LENGTH 1024
 typedef websocketpp::client<websocketpp::config::asio_tls_client> client;
@@ -39,6 +50,7 @@ P *my_container_of_impl(M *ptr, const M P::*member) {
 void OnOpen(client *c, websocketpp::connection_hdl hdl);
 void OnMessage(client *c, websocketpp::connection_hdl hdl, message_ptr msg);
 void OnClose(client *c, websocketpp::connection_hdl hdl);
+void OnFail(client *c, websocketpp::connection_hdl hdl);
 context_ptr OnTlsInit(const char * hostname, websocketpp::connection_hdl);
 
 class SpeechListener {
@@ -67,6 +79,7 @@ class SpeechListener {
             bind(&OnMessage, &m_endpoint, ::_1, ::_2));
         m_endpoint.set_open_handler(bind(&OnOpen, &m_endpoint, _1));
         m_endpoint.set_close_handler(bind(&OnClose, &m_endpoint, _1));
+        m_endpoint.set_fail_handler(bind(&OnFail, &m_endpoint, _1));
         std::string hostname = REALTIME_ASR_HOSTNAME;
         m_endpoint.set_tls_init_handler(bind(&OnTlsInit, hostname.c_str(), ::_1));
         websocketpp::lib::error_code ec;
@@ -122,7 +135,16 @@ context_ptr OnTlsInit(const char * hostname, websocketpp::connection_hdl){
     return ctx;
 }
 
-void OnClose(client *c, websocketpp::connection_hdl hdl) {}
+void OnClose(client *c, websocketpp::connection_hdl hdl) {
+     //std::cout << "====OnClose=====" << std::endl;
+}
+
+void OnFail(client *c, websocketpp::connection_hdl hdl) {
+    SpeechListener *listener = my_container_of(c, SpeechListener, m_endpoint);
+    SpeechRecognizer *recognizer =
+        reinterpret_cast<SpeechRecognizer *>(listener->m_parent_ptr);
+    recognizer->SetFailed();
+}
 
 SpeechRecognitionResponse *decode_response(std::string message) {
     rapidjson::Document doc;
@@ -252,21 +274,26 @@ SpeechRecognizer::SpeechRecognizer(std::string appid, std::string secret_id,
                                    std::string secret_key) {
     InitSpeechRecognizerConfig(appid, secret_id, secret_key);
     ready_ = false;
+    failed_ = false;
 }
 SpeechRecognizer::~SpeechRecognizer() {}
 
-void SpeechRecognizer::Start() {
+int SpeechRecognizer::Start() {
     m_listener = new SpeechListener(this, GetWebsocketURL());
     m_listener->Start();
     int cnt = 0;
     while(!ready_) {
-        usleep(50 * 1000);
+        if (failed_) {
+            return -1;
+        }
+        msleep(50);
         cnt += 1;
         //waiting 1 second
         if (cnt >= 20) {
-            break;
+            return -2;
         }
     }
+    return 0;
 }
 
 void SpeechRecognizer::Stop() {
@@ -274,6 +301,10 @@ void SpeechRecognizer::Stop() {
     m_listener->SendText(end_str.c_str(), end_str.length());
     m_listener->Terminate();
     delete m_listener;
+}
+
+void SpeechRecognizer::SetFailed() {
+    failed_ = true;
 }
 
 void SpeechRecognizer::SetReady() {
