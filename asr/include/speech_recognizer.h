@@ -82,6 +82,8 @@ class SpeechRecognizer {
 
     void Stop();
 
+    void Cancel();
+
     void SetReady();
 
     void SetFailed();

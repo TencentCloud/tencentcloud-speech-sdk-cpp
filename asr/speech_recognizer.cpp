@@ -111,6 +111,11 @@ class SpeechListener {
         m_thread->join();
     }
 
+    void Cancel() {
+        m_endpoint.stop();
+        m_thread->detach();
+    }
+
     client m_endpoint;
     std::string m_url;
     websocketpp::lib::shared_ptr<websocketpp::lib::thread> m_thread;
@@ -301,6 +306,10 @@ void SpeechRecognizer::Stop() {
     m_listener->SendText(end_str.c_str(), end_str.length());
     m_listener->Terminate();
     delete m_listener;
+}
+
+void SpeechRecognizer::Cancel() {
+    m_listener->Cancel();
 }
 
 void SpeechRecognizer::SetFailed() {
