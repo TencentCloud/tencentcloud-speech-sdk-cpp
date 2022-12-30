@@ -361,7 +361,7 @@ void SpeechRecognizer::SetEngineModelType(std::string engine_model_type) {
 }
 
 void SpeechRecognizer::SetVoiceFormat(int voice_format) {
-    m_config.voice_format = voice_format;
+    m_config.voice_format = std::to_string(voice_format);
 }
 
 void SpeechRecognizer::SetNeedVad(int need_vad) {
@@ -382,6 +382,22 @@ void SpeechRecognizer::SetFilterDirty(int filter_dirty) {
 
 void SpeechRecognizer::SetFilterPunc(int filter_punc) {
     m_config.filter_punc = std::to_string(filter_punc);
+}
+
+void SpeechRecognizer::SetSilenceTimeout(int silence_timeout) {
+    m_config.silence_timeout = std::to_string(silence_timeout);
+}
+
+void SpeechRecognizer::SetNoiseThreshold(float noise_threshold) {
+    m_config.noise_threshold = std::to_string(noise_threshold);
+}
+
+void SpeechRecognizer::SetReinforceHotword(int reinforce_hotword) {
+    m_config.reinforce_hotword = std::to_string(reinforce_hotword);
+}
+
+void SpeechRecognizer::SetFilterEmptyResult(int filter_empty_result) {
+    m_config.filter_empty_result = std::to_string(filter_empty_result);
 }
 
 void SpeechRecognizer::SetFilterModal(int filter_modal) {
@@ -411,10 +427,13 @@ void SpeechRecognizer::InitSpeechRecognizerConfig(std::string appid,
     m_config.filter_dirty = "0";
     m_config.filter_model = "0";
     m_config.filter_punc = "0";
+    m_config.filter_empty_result = "1";
+    m_config.reinforce_hotword = "0";
     m_config.convert_num_mode = "0";
     m_config.word_info = "0";
     m_config.hotword_id = "";
     m_config.customization_id = "";
+    m_config.noise_threshold = "";
     m_config.nonce = "";
     char str[32] = { 0 };
     memset(str, 0, 32);
@@ -422,6 +441,7 @@ void SpeechRecognizer::InitSpeechRecognizerConfig(std::string appid,
     snprintf(str, sizeof(str), "%d", rand());
     m_config.voice_id = str;
     m_config.vad_silence_time = "";
+    m_config.silence_timeout = "";
 }
 
 void SpeechRecognizer::BuildRequest() {
@@ -433,6 +453,8 @@ void SpeechRecognizer::BuildRequest() {
     m_builder.SetKeyValue("filter_dirty", m_config.filter_dirty);
     m_builder.SetKeyValue("filter_modal", m_config.filter_model);
     m_builder.SetKeyValue("filter_punc", m_config.filter_punc);
+    m_builder.SetKeyValue("reinforce_hotword", m_config.reinforce_hotword);
+    m_builder.SetKeyValue("filter_empty_result", m_config.filter_empty_result);
     m_builder.SetKeyValue("convert_num_mode", m_config.convert_num_mode);
     m_builder.SetKeyValue("word_info", m_config.word_info);
     // 如果音频大小超过60s，需要设置needvad为1
@@ -443,11 +465,17 @@ void SpeechRecognizer::BuildRequest() {
     if (m_config.customization_id.length() > 0) {
         m_builder.SetKeyValue("customization_id", m_config.customization_id);
     }
+    if (m_config.noise_threshold.length() > 0) {
+        m_builder.SetKeyValue("noise_threshold", m_config.noise_threshold);
+    }
     if (m_config.nonce.length() > 0) {
         m_builder.SetKeyValue("nonce", m_config.nonce);
     }
     if (m_config.vad_silence_time.length() > 0) {
         m_builder.SetKeyValue("vad_silence_time", m_config.vad_silence_time);
+    }
+    if (m_config.silence_timeout.length() > 0) {
+        m_builder.SetKeyValue("silence_timeout", m_config.silence_timeout);
     }
     m_builder.SetKeyValue("voice_id", m_config.voice_id);
 }

@@ -56,6 +56,9 @@ typedef struct {
     std::string filter_dirty;
     std::string filter_model;
     std::string filter_punc;
+    std::string reinforce_hotword;
+    std::string filter_empty_result;
+    std::string noise_threshold;
     std::string convert_num_mode;
     std::string word_info;
     std::string hotword_id;
@@ -64,6 +67,7 @@ typedef struct {
     std::string voice_id;
     std::string nonce;
     std::string vad_silence_time;
+    std::string silence_timeout;
 } SpeechRecognizerConfig;
 
 class SpeechRecognizer {
@@ -120,6 +124,12 @@ class SpeechRecognizer {
 
     void SetFilterPunc(int filter_punc);
 
+    void SetReinforceHotword(int reinforce_hotword);
+
+    void SetNoiseThreshold(float noise_threshold);
+
+    void SetFilterEmptyResult(int filter_empty_result);
+
     void SetFilterModal(int filter_modal);
 
     void SetConvertNumMode(int convert_num_mode);
@@ -127,6 +137,8 @@ class SpeechRecognizer {
     void SetWordInfo(int word_info);
 
     void SetVadSilenceTime(int vad_silence_time);
+
+    void SetSilenceTimeout(int silence_timeout);
 
     SpeechListener *m_listener;
     SpeechRecognizerConfig m_config;
