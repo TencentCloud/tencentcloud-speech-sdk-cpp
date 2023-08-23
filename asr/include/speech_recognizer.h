@@ -62,6 +62,7 @@ typedef struct {
     std::string convert_num_mode;
     std::string word_info;
     std::string hotword_id;
+    std::string hotword_list;
     std::string customization_id;
     std::string secret_key;
     std::string voice_id;
@@ -117,6 +118,8 @@ class SpeechRecognizer {
     void SetNeedVad(int need_vad);
 
     void SetHotwordId(std::string hotword_id);
+
+    void SetHotwordList(std::string hotword_list);
 
     void SetCustomizationId(std::string customization_id);
 

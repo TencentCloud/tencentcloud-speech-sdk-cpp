@@ -3,13 +3,15 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <cstdlib>
+#include <iostream>
 #include <openssl/hmac.h>
 #include <openssl/sha.h>
 #include <openssl/evp.h>
 #include "tcloud_util.h"
 #include "tcloud_public_request_builder.h"
 
-#define MAX_BUFFER_LEN 1024
+#define MAX_BUFFER_LEN 102400
 
 RequestBuilder::RequestBuilder() {
 }
@@ -82,7 +84,7 @@ std::string RequestBuilder::GetAuthorization() {
     char *pBuffer = new char[MAX_BUFFER_LEN];
     memset(pBuffer, 0, MAX_BUFFER_LEN);
     snprintf(pBuffer, MAX_BUFFER_LEN - 1, "asr.cloud.tencent.com/asr/v2/%s?%s",
-        m_appid.c_str(), GetURLParamString(true).c_str());
+        m_appid.c_str(), GetURLParamString(false).c_str());
 
     unsigned char *pOutput = new unsigned char[128];
     memset(pOutput, 0, 128);
