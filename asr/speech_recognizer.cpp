@@ -196,32 +196,29 @@ SpeechRecognitionResponse *decode_response(std::string message) {
             if (itr->name.GetString() == std::string("word_size")) {
                 rsp->result.word_size = itr->value.GetUint();
             }
-            if (itr->name.GetString() == std::string("word_size")) {
+            if (itr->name.GetString() == std::string("word_list")) {
                 if (itr->value.IsArray()) {
                     for (rapidjson::Value::ConstValueIterator itr_arr =
                              itr->value.Begin();
-                         itr_arr != itr->value.End(); ++itr) {
+                         itr_arr != itr->value.End(); ++itr_arr) {
                         if (itr_arr->IsObject()) {
                             ResultWord result_word;
                             for (rapidjson::Value::ConstMemberIterator
                                      itr_word = itr_arr->MemberBegin();
-                                 itr_word != itr_arr->MemberEnd(); ++itr) {
+                                 itr_word != itr_arr->MemberEnd(); ++itr_word) {
                                 if (itr_word->name.GetString() ==
                                     std::string("start_time")) {
                                     result_word.start_time =
                                         itr_word->value.GetUint();
-                                }
-                                if (itr_word->name.GetString() ==
+                                } else if (itr_word->name.GetString() ==
                                     std::string("end_time")) {
                                     result_word.end_time =
                                         itr_word->value.GetUint();
-                                }
-                                if (itr_word->name.GetString() ==
+                                } else if (itr_word->name.GetString() ==
                                     std::string("stable_flag")) {
                                     result_word.stable_flag =
                                         itr_word->value.GetUint();
-                                }
-                                if (itr_word->name.GetString() ==
+                                } else if (itr_word->name.GetString() ==
                                     std::string("word")) {
                                     result_word.word =
                                         itr_word->value.GetString();
