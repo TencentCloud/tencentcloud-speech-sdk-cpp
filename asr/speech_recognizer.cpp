@@ -388,6 +388,10 @@ void SpeechRecognizer::SetSilenceTimeout(int silence_timeout) {
     m_config.silence_timeout = std::to_string(silence_timeout);
 }
 
+void SpeechRecognizer::SetMaxSpeakTime(int max_speak_time) {
+    m_config.max_speak_time = std::to_string(max_speak_time);
+}
+
 void SpeechRecognizer::SetNoiseThreshold(float noise_threshold) {
     m_config.noise_threshold = std::to_string(noise_threshold);
 }
@@ -443,6 +447,7 @@ void SpeechRecognizer::InitSpeechRecognizerConfig(std::string appid,
     m_config.voice_id = str;
     m_config.vad_silence_time = "";
     m_config.silence_timeout = "";
+    m_config.max_speak_time = "";
 }
 
 void SpeechRecognizer::BuildRequest() {
@@ -480,6 +485,9 @@ void SpeechRecognizer::BuildRequest() {
     }
     if (m_config.silence_timeout.length() > 0) {
         m_builder.SetKeyValue("silence_timeout", m_config.silence_timeout);
+    }
+    if (m_config.max_speak_time.length() > 0) {
+        m_builder.SetKeyValue("max_speak_time", m_config.max_speak_time);
     }
     m_builder.SetKeyValue("voice_id", m_config.voice_id);
 }

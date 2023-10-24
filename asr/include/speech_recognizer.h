@@ -69,6 +69,7 @@ typedef struct {
     std::string nonce;
     std::string vad_silence_time;
     std::string silence_timeout;
+    std::string max_speak_time;
 } SpeechRecognizerConfig;
 
 class SpeechRecognizer {
@@ -142,6 +143,8 @@ class SpeechRecognizer {
     void SetVadSilenceTime(int vad_silence_time);
 
     void SetSilenceTimeout(int silence_timeout);
+
+    void SetMaxSpeakTime(int max_speak_time);
 
     SpeechListener *m_listener;
     SpeechRecognizerConfig m_config;
