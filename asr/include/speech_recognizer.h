@@ -18,14 +18,15 @@ enum EventType {
     RecognitionComplete,
 };
 
-typedef struct {
+struct ResultWord{
     std::string word;
     uint32_t start_time;
     uint32_t end_time;
     uint32_t stable_flag;
-} ResultWord;
+    ResultWord(): word(""), start_time(0),end_time(0),stable_flag(0) {}
+};
 
-typedef struct {
+struct RecognitionResult{
     uint32_t slice_type;
     int index;
     uint32_t start_time;
@@ -33,17 +34,18 @@ typedef struct {
     std::string voice_text_str;
     uint32_t word_size;
     std::vector<ResultWord> word_list;
-} RecognitionResult;
+    RecognitionResult(): slice_type(0), index(0), start_time(0), end_time(0), voice_text_str(""), word_size(0) {}
+};
 
-typedef struct {
+struct SpeechRecognitionResponse{
     int code;
     std::string message;
     std::string voice_id;
     std::string message_id;
     uint32_t final_rsp;
     RecognitionResult result;
-} SpeechRecognitionResponse;
-
+    SpeechRecognitionResponse(): code(0), message(""), voice_id(""), message_id(""), final_rsp(0) {}
+};
 class SpeechListener;
 typedef void (*ASRCallBackFunc)(SpeechRecognitionResponse *);
 

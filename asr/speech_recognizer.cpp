@@ -260,7 +260,7 @@ void OnMessage(client *c, websocketpp::connection_hdl hdl, message_ptr msg) {
     }
 
     if (rsp->result.slice_type == 0) {
-        if (rsp->voice_id != "") {
+        if (rsp->voice_id != "" && rsp->message_id != "") {
             recognizer->on_sentence_begin(rsp);
         }
     } else if (rsp->result.slice_type == 2) {
