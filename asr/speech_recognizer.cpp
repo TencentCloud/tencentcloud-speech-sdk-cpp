@@ -372,6 +372,10 @@ void SpeechRecognizer::SetHotwordList(std::string hotword_list) {
     m_config.hotword_list = hotword_list;
 }
 
+void SpeechRecognizer::SetToken(std::string token) {
+    m_config.token = token;
+}
+
 void SpeechRecognizer::SetCustomizationId(std::string customization_id) {
     m_config.customization_id = customization_id;
 }
@@ -436,6 +440,7 @@ void SpeechRecognizer::InitSpeechRecognizerConfig(std::string appid,
     m_config.convert_num_mode = "0";
     m_config.word_info = "0";
     m_config.hotword_id = "";
+    m_config.token = "";
     m_config.hotword_list = "";
     m_config.customization_id = "";
     m_config.noise_threshold = "";
@@ -467,6 +472,9 @@ void SpeechRecognizer::BuildRequest() {
     m_builder.SetKeyValue("needvad", m_config.need_vad);
     if (m_config.hotword_id.length() > 0) {
         m_builder.SetKeyValue("hotword_id", m_config.hotword_id);
+    }
+    if (m_config.token.length() > 0) {
+        m_builder.SetKeyValue("token", m_config.token);
     }
     if (m_config.hotword_list.length() > 0) {
         m_builder.SetKeyValue("hotword_list", m_config.hotword_list);

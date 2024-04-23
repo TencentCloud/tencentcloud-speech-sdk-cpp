@@ -52,6 +52,7 @@ typedef void (*ASRCallBackFunc)(SpeechRecognitionResponse *);
 typedef struct {
     std::string appid;
     std::string secret_id;
+    std::string token;
     std::string engine_model_type;
     std::string voice_format;
     std::string need_vad;
@@ -121,6 +122,8 @@ class SpeechRecognizer {
     void SetNeedVad(int need_vad);
 
     void SetHotwordId(std::string hotword_id);
+
+    void SetToken(std::string token);
 
     void SetHotwordList(std::string hotword_list);
 
