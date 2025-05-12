@@ -73,6 +73,7 @@ typedef struct {
     std::string vad_silence_time;
     std::string silence_timeout;
     std::string max_speak_time;
+    std::string replace_text_id;
 } SpeechRecognizerConfig;
 
 class SpeechRecognizer {
@@ -126,6 +127,8 @@ class SpeechRecognizer {
     void SetToken(std::string token);
 
     void SetHotwordList(std::string hotword_list);
+
+    void SetReplaceTextId(std::string replace_text_id);
 
     void SetCustomizationId(std::string customization_id);
 

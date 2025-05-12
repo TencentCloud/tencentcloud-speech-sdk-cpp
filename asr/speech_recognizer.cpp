@@ -372,6 +372,10 @@ void SpeechRecognizer::SetHotwordList(std::string hotword_list) {
     m_config.hotword_list = hotword_list;
 }
 
+void SpeechRecognizer::SetReplaceTextId(std::string replace_text_id)  {
+    m_config.replace_text_id = replace_text_id;
+}
+
 void SpeechRecognizer::SetToken(std::string token) {
     m_config.token = token;
 }
@@ -453,6 +457,7 @@ void SpeechRecognizer::InitSpeechRecognizerConfig(std::string appid,
     m_config.vad_silence_time = "";
     m_config.silence_timeout = "";
     m_config.max_speak_time = "";
+    m_config.replace_text_id = "";
 }
 
 void SpeechRecognizer::BuildRequest() {
@@ -479,6 +484,10 @@ void SpeechRecognizer::BuildRequest() {
     if (m_config.hotword_list.length() > 0) {
         m_builder.SetKeyValue("hotword_list", m_config.hotword_list);
     }
+    if (m_config.replace_text_id.length() > 0) {
+        m_builder.SetKeyValue("replace_text_id", m_config.replace_text_id);
+    }
+
     if (m_config.customization_id.length() > 0) {
         m_builder.SetKeyValue("customization_id", m_config.customization_id);
     }
